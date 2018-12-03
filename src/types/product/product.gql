@@ -1,0 +1,84 @@
+enum ProductType {
+  GAMING_PC
+  BIKE
+  DRONE
+}
+
+enum BikeType {
+  KIDS
+  MOUNTAIN
+  ELECTRIC
+  BEACH
+}
+
+interface Product {
+  name: String!
+  price: Float!
+  image: String!
+  type: ProductType!
+  createdBy: User!
+  description: String
+}
+
+type GamingPc implements Product {
+  name: String!
+  price: Float!
+  image: String!
+  type: ProductType!
+  createdBy: User!
+  description: String
+  liquidCooled: Boolean!
+}
+
+type Bike implements Product {
+  name: String!
+  price: Float!
+  image: String!
+  type: ProductType!
+  createdBy: User!
+  description: String
+  bikeType: BikeType!
+}
+
+type Drone implements Product {
+  name: String!
+  price: Float!
+  image: String!
+  type: ProductType!
+  createdBy: User!
+  description: String
+  range: String!
+}
+
+input NewProductInput {
+  name: String!
+  price: Float!
+  image: String!
+  type: ProductType!
+  description: String
+  liquidCooled: Boolean
+  bikeType: BikeType
+  range: String
+}
+
+input UpdateProductInput {
+  name: String
+  price: String
+  image: String
+  description: String
+  liquidCooled: Boolean
+  bikeType: BikeType
+  range: String
+}
+
+
+extend type Query {
+  products: [Product]!
+  product(id: ID!): Product!
+}
+
+extend type Mutation {
+  newProduct(input: NewProductInput!): Product!
+  updateProduct(id: ID!, input: UpdateProductInput!): Product!
+  removeProduct(id: ID!): Product!
+}
