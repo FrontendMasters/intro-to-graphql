@@ -139,9 +139,9 @@ describe('Resolvers', () => {
   })
   describe('lesson-5:', () => {
     test('product requires auth', async () => {
-      expect(() => resolvers.Query.product(null, {}, {})).toThrow(
-        AuthenticationError
-      )
+      expect(() =>
+        resolvers.Query.product(null, { id: mongoose.Types.ObjectId() }, {})
+      ).toThrow(AuthenticationError)
     })
     test('products requires auth', () => {
       expect(() => resolvers.Query.products(null, {}, {})).toThrow(
@@ -149,15 +149,39 @@ describe('Resolvers', () => {
       )
     })
     test('newProduct requires auth and admin', () => {
-      expect(() => resolvers.Mutation.newProduct(null, {}, {})).toThrow(
-        AuthenticationError
-      )
       expect(() =>
-        resolvers.Mutation.newProduct(null, {}, { user: { roles: 'member' } })
+        resolvers.Mutation.newProduct(
+          null,
+          {
+            input: {
+              name: 'Monster v5 bike',
+              price: 450,
+              bikeType: 'KIDS',
+              type: 'BIKE',
+              createdBy: mongoose.Types.ObjectId()
+            }
+          },
+          {}
+        )
+      ).toThrow(AuthenticationError)
+      expect(() =>
+        resolvers.Mutation.newProduct(
+          null,
+          {
+            input: {
+              name: 'Monster v6 bike',
+              price: 450,
+              bikeType: 'KIDS',
+              type: 'BIKE',
+              createdBy: mongoose.Types.ObjectId()
+            }
+          },
+          { user: { roles: 'member' } }
+        )
       ).toThrow(AuthenticationError)
     })
 
-    test('newProduct uses auth user for createdBy', async () => {
+    test('newProduct uses auth user for createdBy', async done => {
       const userId = mongoose.Types.ObjectId()
       const result = await resolvers.Mutation.newProduct(
         null,
@@ -173,23 +197,40 @@ describe('Resolvers', () => {
       )
 
       expect(`${result.createdBy}`).toBe(`${userId}`)
+      done()
     })
 
     test('updateProduct requires auth and admin', () => {
-      expect(() => resolvers.Mutation.updateProduct(null, {}, {})).toThrow(
-        AuthenticationError
-      )
       expect(() =>
-        resolvers.Mutation.updateProduct(null, {}, { user: { role: 'member' } })
+        resolvers.Mutation.updateProduct(
+          null,
+          { id: mongoose.Types.ObjectId(), input: { name: 'new name' } },
+          {}
+        )
+      ).toThrow(AuthenticationError)
+      expect(() =>
+        resolvers.Mutation.updateProduct(
+          null,
+          { id: mongoose.Types.ObjectId(), input: { name: 'new name' } },
+          { user: { role: 'member' } }
+        )
       ).toThrow(AuthenticationError)
     })
 
     test('removeProduct requires auth and admin', () => {
-      expect(() => resolvers.Mutation.removeProduct(null, {}, {})).toThrow(
-        AuthenticationError
-      )
       expect(() =>
-        resolvers.Mutation.removeProduct(null, {}, { user: { role: 'member' } })
+        resolvers.Mutation.removeProduct(
+          null,
+          { id: mongoose.Types.ObjectId() },
+          {}
+        )
+      ).toThrow(AuthenticationError)
+      expect(() =>
+        resolvers.Mutation.removeProduct(
+          null,
+          { id: mongoose.Types.ObjectId() },
+          { user: { role: 'member' } }
+        )
       ).toThrow(AuthenticationError)
     })
   })
