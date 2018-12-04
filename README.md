@@ -29,7 +29,6 @@ In this lesson you'll be creating a simple GraphQL server using Apollo Server.
 
 This exercise will have you creating a GraphQL Schema based on the the mongoose models already created
 - [ ] create Type for product
-- [ ] create enums for product
 - [ ] create inputs for product
 - [ ] create queries for product
 - [ ] create mutations for product
