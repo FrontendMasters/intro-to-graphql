@@ -100,20 +100,15 @@ describe('Product schema', () => {
             price
             image
             type
-            ... on Drone {
-              range
-            }
-            ... on GamingPc {
-              liquidCooled
-            }
-            ... on Bike {
-              bikeType
-            }
+            range
+            liquidCooled
+            bikeType
           }
         }
       `
-
       await expect(server.query(query)).resolves.toBeTruthy()
+      const { errors } = await server.query(query)
+      expect(errors).not.toBeTruthy()
     })
 
     it('products query', async () => {
@@ -125,19 +120,92 @@ describe('Product schema', () => {
             price
             image
             type
-            ... on Drone {
-              range
-            }
-            ... on GamingPc {
-              liquidCooled
-            }
-            ... on Bike {
-              bikeType
-            }
+            range
+            liquidCooled
+            bikeType
           }
         }
       `
       await expect(server.query(query)).resolves.toBeTruthy()
+      const { errors } = await server.query(query)
+      expect(errors).not.toBeTruthy()
+    })
+    it('newProduct mutation', async () => {
+      const server = mockServer(typeDefs)
+      const query = `
+        mutation CreateNewProduct($input: NewProductInput!) {
+          newProduct(input: $input) {
+            name
+            price
+            image
+            type
+            range
+            liquidCooled
+            bikeType
+          }
+        }
+      `
+      const vars = {
+        input: {
+          name: 'Monster v5 bike',
+          price: 450,
+          bikeType: 'KIDS',
+          type: 'BIKE',
+          image: 'http://image.png'
+        }
+      }
+      await expect(server.query(query, vars)).resolves.toBeTruthy()
+      const { errors } = await server.query(query, vars)
+      expect(errors).not.toBeTruthy()
+    })
+
+    it('updateProduct mutation', async () => {
+      const server = mockServer(typeDefs)
+      const query = `
+        mutation UpdateProduct($id: ID!, $input: UpdateProductInput!) {
+          updateProduct(id: $id, input: $input) {
+            name
+            price
+            image
+            type
+            range
+            liquidCooled
+            bikeType
+          }
+        }
+      `
+      const vars = {
+        id: 'i934lasjf',
+        input: {
+          name: 'Monster v5 bike'
+        }
+      }
+      await expect(server.query(query, vars)).resolves.toBeTruthy()
+      const { errors } = await server.query(query, vars)
+      expect(errors).not.toBeTruthy()
+    })
+
+    it('removeProduct mutation', async () => {
+      const server = mockServer(typeDefs)
+      const query = `
+        mutation RemoveProduct($id: ID!) {
+          removeProduct(id: $id) {
+            name
+            price
+            image
+            type
+            range
+            liquidCooled
+            bikeType
+          }
+        }
+      `
+      const vars = {
+        id: 'i934lasjf'
+      }
+      await expect(server.query(query, vars)).resolves.toBeTruthy()
+      const { errors } = await server.query(query, vars)
+      expect(errors).not.toBeTruthy()
     })
   })
   describe('lesson-4:', () => {
