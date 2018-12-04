@@ -157,6 +157,24 @@ describe('Resolvers', () => {
       ).toThrow(AuthenticationError)
     })
 
+    test('newProduct uses auth user for createdBy', async () => {
+      const userId = mongoose.Types.ObjectId()
+      const result = await resolvers.Mutation.newProduct(
+        null,
+        {
+          input: {
+            name: 'Monster v5 bike',
+            price: 450,
+            bikeType: 'KIDS',
+            type: 'BIKE'
+          }
+        },
+        { user: { _id: userId, role: 'admin' } }
+      )
+
+      expect(`${result.createdBy}`).toBe(`${userId}`)
+    })
+
     test('updateProduct requires auth and admin', () => {
       expect(() => resolvers.Mutation.updateProduct(null, {}, {})).toThrow(
         AuthenticationError
