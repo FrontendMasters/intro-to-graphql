@@ -145,24 +145,24 @@ describe('Product schema', () => {
           }
         }
       `
-      await expect(
-        server.query(query, {
-          input: {
-            name: 'Monster v5 bike',
-            price: 450,
-            bikeType: 'KIDS',
-            type: 'BIKE'
-          }
-        })
-      ).resolves.toBeTruthy()
-      const { errors } = await server.query(query)
+      const vars = {
+        input: {
+          name: 'Monster v5 bike',
+          price: 450,
+          bikeType: 'KIDS',
+          type: 'BIKE',
+          image: 'http://image.png'
+        }
+      }
+      await expect(server.query(query, vars)).resolves.toBeTruthy()
+      const { errors } = await server.query(query, vars)
       expect(errors).not.toBeTruthy()
     })
 
     it('updateProduct mutation', async () => {
       const server = mockServer(typeDefs)
       const query = `
-        mutation UpdateProduct($id: ID!, $input: NewProductInput!) {
+        mutation UpdateProduct($id: ID!, $input: UpdateProductInput!) {
           updateProduct(id: $id, input: $input) {
             name
             price
@@ -174,15 +174,14 @@ describe('Product schema', () => {
           }
         }
       `
-      await expect(
-        server.query(query, {
-          id: 'i934lasjf',
-          input: {
-            name: 'Monster v5 bike'
-          }
-        })
-      ).resolves.toBeTruthy()
-      const { errors } = await server.query(query)
+      const vars = {
+        id: 'i934lasjf',
+        input: {
+          name: 'Monster v5 bike'
+        }
+      }
+      await expect(server.query(query, vars)).resolves.toBeTruthy()
+      const { errors } = await server.query(query, vars)
       expect(errors).not.toBeTruthy()
     })
 
@@ -201,12 +200,11 @@ describe('Product schema', () => {
           }
         }
       `
-      await expect(
-        server.query(query, {
-          id: 'i934lasjf'
-        })
-      ).resolves.toBeTruthy()
-      const { errors } = await server.query(query)
+      const vars = {
+        id: 'i934lasjf'
+      }
+      await expect(server.query(query, vars)).resolves.toBeTruthy()
+      const { errors } = await server.query(query, vars)
       expect(errors).not.toBeTruthy()
     })
   })
