@@ -1,13 +1,12 @@
 import mongoose from 'mongoose'
 import cuid from 'cuid'
-import * as models from './src/models'
+import config from './src/config'
 import _ from 'lodash'
+import { User } from './src/types/user/user.model'
+import { Product } from './src/types/product/product.model'
+import { Coupon } from './src/types/coupon/coupon.model'
 
-const url =
-  process.env.MONGODB_URI ||
-  process.env.DB_URL ||
-  'mongodb://localhost:27017/introgql-testing'
-
+const models = { Coupon, Product, User }
 global.newId = () => {
   return mongoose.Types.ObjectId()
 }
@@ -29,7 +28,7 @@ beforeEach(async done => {
   if (mongoose.connection.readyState === 0) {
     try {
       await mongoose.connect(
-        url + db,
+        config.dbUrl + db,
         {
           useNewUrlParser: true,
           autoIndex: true

@@ -1,7 +1,6 @@
 import { Product } from './product.model'
-import { User } from '../user/user.model'
+import { User, roles } from '../user/user.model'
 import { AuthenticationError } from 'apollo-server'
-import { roles } from '../../utils/auth'
 
 const productsTypeMatcher = {
   GAMING_PC: 'GamingPc',

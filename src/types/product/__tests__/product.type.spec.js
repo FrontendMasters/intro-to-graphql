@@ -1,106 +1,191 @@
-import { Product } from '../product.model'
-import mongoose from 'mongoose'
-import validator from 'validator'
-import { isFunction } from 'lodash'
+import { buildSchema } from 'graphql'
+import { schemaToTemplateContext } from 'graphql-codegen-core'
+import { loadTypeSchema } from '../../../utils/schema'
+import { mockServer } from 'graphql-tools'
 
-describe('Product model', () => {
-  describe('schema', () => {
-    test('name', () => {
-      const name = Product.schema.obj.name
-      expect(name).toEqual({
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-        lowercase: true
-      })
-    })
-
-    test('price', () => {
-      const price = Product.schema.obj.price
-      expect(price).toEqual({
-        type: Number,
-        required: true
-      })
-    })
-
-    test('image', () => {
-      const image = Product.schema.obj.image
-      expect(validator.isURL(image.default)).toBeTruthy()
-
-      expect(image.type).toBe(String)
-      expect(image.required).toBe(true)
-      expect(Array.isArray(image.validate)).toBeTruthy()
-      expect(image.validate[1]).toBe('Not a valid image url')
-    })
-
-    test('type', () => {
-      const type = Product.schema.obj.type
-      expect(type).toEqual({
-        type: String,
-        required: true,
-        enum: ['GAMING_PC', 'BIKE', 'DRONE']
-      })
-    })
-
-    test('description', () => {
-      const description = Product.schema.obj.description
-      expect(description).toBe(String)
-    })
-
-    test('liquidCooled', () => {
-      const liquidCooled = Product.schema.obj.liquidCooled
-      expect(liquidCooled.type).toBe(Boolean)
-      expect(isFunction(liquidCooled.required)).toBeTruthy()
-
-      const o = {
-        type: 'GAMING_PC'
+describe('Product schema', () => {
+  let schema, typeDefs
+  beforeAll(async () => {
+    const root = `
+      schema {
+        query: Query
+        mutation: Mutation
       }
 
-      expect(liquidCooled.required.call(o)).toBe(true)
-      o.type = 'BIKE'
-
-      expect(liquidCooled.required.call(o)).toBe(false)
-    })
-
-    test('bikeType', () => {
-      const bikeType = Product.schema.obj.bikeType
-      expect(bikeType.type).toBe(String)
-      expect(bikeType.enum).toEqual(['KIDS', 'MOUNTAIN', 'ELECTRIC', 'BEACH'])
-      expect(isFunction(bikeType.required)).toBeTruthy()
-
-      const o = {
-        type: 'BIKE'
-      }
-
-      expect(bikeType.required.call(o)).toBe(true)
-      o.type = 'DRONE'
-
-      expect(bikeType.required.call(o)).toBe(false)
-    })
-
-    test('range', () => {
-      const range = Product.schema.obj.range
-      expect(range.type).toBe(String)
-      expect(isFunction(range.required)).toBeTruthy()
-
-      const o = {
-        type: 'DRONE'
-      }
-
-      expect(range.required.call(o)).toBe(true)
-      o.type = 'GAMING_PC'
-
-      expect(range.required.call(o)).toBe(false)
-    })
-
-    test('createdBy', () => {
-      const createdBy = Product.schema.obj.createdBy
-      expect(createdBy).toEqual({
-        type: mongoose.SchemaTypes.ObjectId,
-        required: true,
-        ref: 'user'
+    `
+    const typeSchemas = await Promise.all(
+      ['product', 'user', 'coupon'].map(loadTypeSchema)
+    )
+    typeDefs = root + typeSchemas.join(' ')
+    schema = schemaToTemplateContext(buildSchema(typeDefs))
+  })
+  describe('lesson-2:', () => {
+    test('Product has base fields', () => {
+      let type = schema.types.find(t => {
+        return t.name === 'Product'
       })
+
+      if (!type && process.env.GQL_LESSON !== 'lesson-2') {
+        type = schema.interfaces.find(t => {
+          return t.name === 'Product'
+        })
+      }
+
+      expect(type).toBeTruthy()
+
+      const baseFields = {
+        name: 'String!',
+        price: 'Float!',
+        image: 'String!',
+        type: 'ProductType!',
+        createdBy: 'User!',
+        description: 'String'
+      }
+
+      type.fields.forEach(field => {
+        const type = baseFields[field.name]
+        expect(field.raw).toBe(type)
+      })
+    })
+    test('NewProductInput has correct fields', () => {
+      const input = schema.inputTypes.find(i => i.name === 'NewProductInput')
+
+      expect(input).toBeTruthy()
+
+      const fields = {
+        name: 'String!',
+        price: 'Float!',
+        image: 'String!',
+        type: 'ProductType!',
+        description: 'String',
+        liquidCooled: 'Boolean',
+        bikeType: 'BikeType',
+        range: 'String'
+      }
+      input.fields.forEach(field => {
+        const type = fields[field.name]
+        expect(field.raw).toBe(type)
+      })
+    })
+
+    test('UpdateProductInput has correct fields', () => {
+      const input = schema.inputTypes.find(i => i.name === 'UpdateProductInput')
+
+      expect(input).toBeTruthy()
+
+      const fields = {
+        name: 'String',
+        price: 'String',
+        image: 'String',
+        description: 'String',
+        liquidCooled: 'Boolean',
+        bikeType: 'BikeType',
+        range: 'String'
+      }
+
+      input.fields.forEach(field => {
+        const type = fields[field.name]
+        expect(field.raw).toBe(type)
+      })
+    })
+    it('product query', async () => {
+      const server = mockServer(typeDefs)
+      const query = `
+        {
+          product(id: "384hsd") {
+            name
+            price
+            image
+            type
+            ... on Drone {
+              range
+            }
+            ... on GamingPc {
+              liquidCooled
+            }
+            ... on Bike {
+              bikeType
+            }
+          }
+        }
+      `
+
+      await expect(server.query(query)).resolves.toBeTruthy()
+    })
+
+    it('products query', async () => {
+      const server = mockServer(typeDefs)
+      const query = `
+        {
+          products {
+            name
+            price
+            image
+            type
+            ... on Drone {
+              range
+            }
+            ... on GamingPc {
+              liquidCooled
+            }
+            ... on Bike {
+              bikeType
+            }
+          }
+        }
+      `
+      await expect(server.query(query)).resolves.toBeTruthy()
+    })
+  })
+  describe('lesson-4:', () => {
+    test('product must be an interface', () => {
+      const product = schema.interfaces.find(t => {
+        return t.name === 'Product'
+      })
+
+      expect(product).toBeTruthy()
+    })
+
+    test('GamingPc type imeplements Product', () => {
+      const type = schema.types.find(t => t.name === 'GamingPc')
+      expect(type).toBeTruthy()
+
+      expect(type.hasInterfaces).toBe(true)
+      expect(type.interfaces).toHaveLength(1)
+      expect(type.interfaces[0]).toBe('Product')
+
+      const field = type.fields.find(f => f.name === 'liquidCooled')
+
+      expect(field).toBeTruthy()
+      expect(field.raw).toBe('Boolean!')
+    })
+
+    test('Bike type imeplements Product', () => {
+      const type = schema.types.find(t => t.name === 'Bike')
+      expect(type).toBeTruthy()
+
+      expect(type.hasInterfaces).toBe(true)
+      expect(type.interfaces).toHaveLength(1)
+      expect(type.interfaces[0]).toBe('Product')
+
+      const field = type.fields.find(f => f.name === 'bikeType')
+
+      expect(field).toBeTruthy()
+      expect(field.raw).toBe('BikeType!')
+    })
+
+    test('Drone type imeplements Product', () => {
+      const type = schema.types.find(t => t.name === 'Drone')
+      expect(type).toBeTruthy()
+
+      expect(type.hasInterfaces).toBe(true)
+      expect(type.interfaces).toHaveLength(1)
+      expect(type.interfaces[0]).toBe('Product')
+
+      const field = type.fields.find(f => f.name === 'range')
+
+      expect(field).toBeTruthy()
+      expect(field.raw).toBe('String!')
     })
   })
 })
