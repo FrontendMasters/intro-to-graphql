@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "babel src --out-dir dist",
-    "test": "cross-env NODE_ENV=testing jest --forceExit --detectOpenHandles --silent",
+    "test": "cross-env NODE_ENV=testing jest --forceExit --detectOpenHandles",
     "test-schema": "GQL_LESSON=lesson-2 npm test -- -t lesson-2",
     "test-resolvers": "npm test -- -t lesson-3",
     "test-interfaces": "cross-env npm test -- -t lesson-4",
