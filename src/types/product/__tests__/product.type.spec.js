@@ -39,7 +39,10 @@ describe('Product schema', () => {
         image: 'String!',
         type: 'ProductType!',
         createdBy: 'User!',
-        description: 'String'
+        description: 'String',
+        liquidCooled: 'Boolean',
+        range: 'String',
+        bikeType: 'BikeType'
       }
 
       type.fields.forEach(field => {
