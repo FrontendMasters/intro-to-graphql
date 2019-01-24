@@ -78,7 +78,7 @@ describe('Product schema', () => {
 
       const fields = {
         name: 'String',
-        price: 'String',
+        price: 'Float',
         image: 'String',
         description: 'String',
         liquidCooled: 'Boolean',
