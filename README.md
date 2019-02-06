@@ -9,8 +9,8 @@
 * [GraphQL](https://graphql.org/)
 
 ## Course
-This course has two parts, slides and excercises. The slides describe the excerices in detail. Each excercise has a starting branch and solution branch. Example `lesson-1` and `lesson-1-solution`.
-## Excercises
+This course has two parts, slides and exercises. The slides describe the exercises in detail. Each exercise has a starting branch and solution branch. Example `lesson-1` and `lesson-1-solution`.
+## Exercises
 ### Hello world GraphQL server with Apollo Server
 * branch - `lesson-1`
 
@@ -27,7 +27,7 @@ In this lesson you'll be creating a simple GraphQL server using Apollo Server.
 * branch - `lesson-2`
 * test command - `yarn test-schema` or `npm run test-schema`
 
-This exercise will have you creating a GraphQL Schema based on the the mongoose models already created
+This exercise will have you creating a GraphQL Schema based on the the mongoose models already created.
 - [ ] create Type for product
 - [ ] create inputs for product
 - [ ] create queries for product
@@ -49,7 +49,7 @@ In this exercise, you'll be creating resolvers for the Queries and Mutations on 
 * branch - `lesson-4`
 * test command - `yarn test-interfaces` or `npm run test-interfaces`
 
-Now that you know about schemas and resolvers, we need to make some changes. Our product model in mongoose is split between 3 different product types. We need to make the product type an interface and then create types for each possible type in our mongoose model. Don't forget to create  resolver to resolve the type.
+Now that you know about schemas and resolvers, we need to make some changes. Our product model in mongoose is split between 3 different product types. We need to make the product type an interface and then create types for each possible type in our mongoose model. Don't forget to create a resolver to resolve the type.
 
 - [ ] change product type to an interface
 - [ ] create Bike type that implements product
