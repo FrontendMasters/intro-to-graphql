@@ -14,6 +14,8 @@ This course has two parts, slides and excercises. The slides describe the exceri
 ### Hello world GraphQL server with Apollo Server
 * branch - `lesson-1`
 
+Note: ensure that you have [MongoDB](https://www.mongodb.com/) installed, and the server is running. See their [website](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/#install-mongodb-community-edition-on-macos)
+
 In this lesson you'll be creating a simple GraphQL server using Apollo Server. 
 - [ ] install dependencies with yarn (prefered for version locking) or npm
 - [ ] create a schema with at least one Type
