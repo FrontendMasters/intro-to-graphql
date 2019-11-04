@@ -45,9 +45,10 @@ describe('Product schema', () => {
         bikeType: 'BikeType'
       }
 
-      type.fields.forEach(field => {
-        const type = baseFields[field.name]
-        expect(field.raw).toBe(type)
+      Object.keys(baseFields).forEach(field => {
+        const schemaField = type.fields.find(f => f.name === field)
+        expect(schemaField).toBeTruthy()
+        expect(schemaField.raw).toBe(baseFields[field])
       })
     })
     test('NewProductInput has correct fields', () => {
