@@ -3,6 +3,8 @@ import { schemaToTemplateContext } from 'graphql-codegen-core'
 import { loadTypeSchema } from '../../../utils/schema'
 import { mockServer } from 'graphql-tools'
 
+// Run test using "yarn run test-schema"
+
 describe('Product schema', () => {
   let schema, typeDefs
   beforeAll(async () => {
