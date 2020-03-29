@@ -202,7 +202,7 @@ describe('Product schema', () => {
       expect(product).toBeTruthy()
     })
 
-    test('GamingPc type imeplements Product', () => {
+    test('GamingPc type implements Product', () => {
       const type = schema.types.find(t => t.name === 'GamingPc')
       expect(type).toBeTruthy()
 
@@ -216,7 +216,7 @@ describe('Product schema', () => {
       expect(field.raw).toBe('Boolean!')
     })
 
-    test('Bike type imeplements Product', () => {
+    test('Bike type implements Product', () => {
       const type = schema.types.find(t => t.name === 'Bike')
       expect(type).toBeTruthy()
 
@@ -230,7 +230,7 @@ describe('Product schema', () => {
       expect(field.raw).toBe('BikeType!')
     })
 
-    test('Drone type imeplements Product', () => {
+    test('Drone type implements Product', () => {
       const type = schema.types.find(t => t.name === 'Drone')
       expect(type).toBeTruthy()
 
