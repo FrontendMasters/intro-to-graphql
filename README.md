@@ -8,6 +8,10 @@
 * [Apollo](https://www.apollographql.com/docs/apollo-server/)
 * [GraphQL](https://graphql.org/)
 
+## Dependencies
+
+For this project, the recommended node version is v8. You can use [nvm](https://github.com/nvm-sh/nvm) to install it by running `nvm install 8` and then `nvm use` since we provided a `.nvmrc` for this repository. This will prevent errors when installing this project dependencies.
+
 ## Course
 This course has two parts, slides and excercises. The slides describe the excerices in detail. Each excercise has a starting branch and solution branch. Example `lesson-1` and `lesson-1-solution`.
 ## Excercises
