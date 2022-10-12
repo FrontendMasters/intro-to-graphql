@@ -53,7 +53,7 @@
     "restoreMocks": true
   },
   "dependencies": {
-    "apollo-server": "^2.2.5",
+    "apollo-server": "^2.25.4",
     "bcrypt": "^3.0.2",
     "cuid": "^2.1.4",
     "graphql": "^14.0.2",
